@@ -38,7 +38,7 @@
 	注：运行前请打开服务器对应端口；采用上述命令运行后，产生的数据及日志文件都在容器内，若需容器和宿主机打通，可按需调整命令
 	docker命令大全：https://docs.docker.com/engine/reference/commandline/run/
 	2. 进入容器：
-		docker exec -it 容器id /bin/bash
+		docker exec -it harbor /bin/bash
     3. 查询服务是否启动：
 	    cat /harbor/run.log 
        或
@@ -67,3 +67,17 @@
 	|--- /data             	      // Harbor 数据文件
 
 
+##  可能遇到的问题：
+    1. 各服务间通信超时问题：
+    ERROR: An HTTP request took too long to complete. Retry with --verbose to obtain debug information.
+           If you encounter this issue regularly because of slow network conditions, consider setting COMPOSE_HTTP_TIMEOUT to a higher value (current value: 60).
+    解决方案：
+    (1) 进入容器：
+        docker exec -it harbor /bin/bash
+    (2) 在尾部添加代码：
+        export COMPOSE_HTTP_TIMEOUT=500
+        export DOCKER_CLIENT_TIMEOUT=500
+    (3) 使/etc/profile配置文件生效：
+        source /etc/profile
+    (4) 重新安装
+        ./harbor/install.sh
